@@ -5,3 +5,4 @@ joblib
 requests
 skl2onnx
 onnx
+onnxruntime
