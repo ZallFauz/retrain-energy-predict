@@ -11,9 +11,9 @@ from skl2onnx import convert_sklearn
 from skl2onnx.common.data_types import FloatTensorType
 
 
-READ_API_KEY = os.environ["READ_API_KEY"]
-WRITE_API_KEY = os.environ["WRITE_API_KEY"]
-CHANNEL_ID = os.environ["CHANNEL_ID"]
+READ_API_KEY = os.environ["THINGSPEAK_READ_API_KEY"]
+# WRITE_API_KEY = os.environ["WRITE_API_KEY"]
+CHANNEL_ID = os.environ["THINGSPEAK_CHANNEL_ID"]
 
 
 VOLTAGE = 'voltage'
