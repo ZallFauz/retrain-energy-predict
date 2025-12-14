@@ -31,6 +31,6 @@ jobs:
         THINGSPEAK_READ_API_KEY: ${{ secrets.THINGSPEAK_READ_API_KEY }}
         THINGSPEAK_WRITE_API_KEY: ${{ secrets.THINGSPEAK_WRITE_API_KEY}}
         THINGSPEAK_WRITE_CHANNEL_ID: ${{ secrets.THINGSPEAK_WRITE_CHANNEL_ID}}
-        THINGPSEAK_USER_API_KEY: ${{ secrets.THINGSPEAK_USER_API_KEY}}
+        THINGSPEAK_USER_API_KEY: ${{ secrets.THINGSPEAK_USER_API_KEY}}
       run: |
         python scripts/predict.py
