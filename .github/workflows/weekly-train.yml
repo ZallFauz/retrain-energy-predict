@@ -1,0 +1,77 @@
+name: Weekly Energy Model Training
+
+on:
+  schedule:
+# Runs every Monday 01:00 Jakarta time (UTC+7)
+    - cron: "0 18 * * 0"
+  workflow_dispatch:
+    inputs:
+      force_retrain:
+        description: "Force full retrain (ignore cache)"
+        required: false
+        default: "false"
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+
+    steps:
+    # -----------------------------
+    # 1. Checkout repository
+    # -----------------------------
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        persist-credentials: true
+        fetch-depth: 0
+
+    # -----------------------------
+    # 2. Setup Python
+    # -----------------------------
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10"
+
+    # -----------------------------
+    # 3. Install dependencies
+    # -----------------------------
+    - name: Install dependencies
+      run: |
+        pip install --upgrade pip
+        pip install numpy pandas scikit-learn matplotlib requests
+        pip install skl2onnx onnx onnxruntime
+
+    # -----------------------------
+    # 4. Run training script
+    # -----------------------------
+    - name: Train SVR model and export ONNX
+      env:
+        THINGSPEAK_CHANNEL_ID: ${{ secrets.THINGSPEAK_CHANNEL_ID }}
+        THINGSPEAK_READ_API_KEY: ${{ secrets.THINGSPEAK_READ_API_KEY }}
+      run: |
+        python scripts/train_energy_svr.py
+
+    # -----------------------------
+    # 5. Commit updated dataset (optional)
+    # -----------------------------
+    - name: Commit updated dataset
+      run: |
+        git config user.name "github-actions"
+        git config user.email "github-actions@github.com"
+        git add data/energy_history.csv
+        git diff --cached --quiet || git commit -m "Update energy dataset"
+        git push
+
+    # -----------------------------
+    # 6. Create GitHub Release for ONNX model
+    # -----------------------------
+    - name: Create release and upload ONNX model
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: weekly-model-${{ github.run_number }}
+        name: Weekly Energy Model
+        files: |
+          models/energy_svr.onnx
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
