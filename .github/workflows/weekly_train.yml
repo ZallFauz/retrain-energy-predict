@@ -50,7 +50,7 @@ jobs:
         THINGSPEAK_CHANNEL_ID: ${{ secrets.THINGSPEAK_CHANNEL_ID }}
         THINGSPEAK_READ_API_KEY: ${{ secrets.THINGSPEAK_READ_API_KEY }}
       run: |
-        python scripts/train_energy_svr.py
+        python scripts/train_weekly.py
 
     # -----------------------------
     # 5. Commit updated dataset (optional)
