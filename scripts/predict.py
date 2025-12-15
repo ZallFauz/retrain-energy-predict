@@ -121,7 +121,7 @@ def push_predictions(df):
         payload = {
             "api_key": utils.WRITE_API_KEY,
             "field1": row["energy_delta"],
-            "created_at": row.name.strftime("%Y-%m-%d %H:%M:%S")
+            "created_at": row[timestamp].strftime("%Y-%m-%d %H:%M:%S")
         }
 
         r = requests.post(url, data=payload)
@@ -163,7 +163,7 @@ def bulk_push_predictions(df):
 def publish_7day_forecast(future_df):
     clear_channel()
     time.sleep(5)
-    bulk_push_predictions(future_df)
+    push_prediction(future_df)
 
 # -------------------------------------------------
 # Main
