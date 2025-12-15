@@ -163,7 +163,7 @@ def bulk_push_predictions(df):
 def publish_7day_forecast(future_df):
     clear_channel()
     time.sleep(5)
-    push_prediction(future_df)
+    push_predictions(future_df)
 
 # -------------------------------------------------
 # Main
