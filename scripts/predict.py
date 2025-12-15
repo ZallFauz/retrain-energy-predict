@@ -121,7 +121,7 @@ def push_predictions(df):
         payload = {
             "api_key": utils.WRITE_API_KEY,
             "field1": row["energy_delta"],
-            "created_at": row[timestamp].strftime("%Y-%m-%d %H:%M:%S")
+            "created_at": row["timestamp"].strftime("%Y-%m-%d %H:%M:%S")
         }
 
         r = requests.post(url, data=payload)
