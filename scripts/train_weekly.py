@@ -5,7 +5,9 @@ import numpy as np
 import joblib
 from sklearn.svm import SVR
 from sklearn.preprocessing import StandardScaler
-
+import onnx
+from skl2onnx import convert_sklearn
+from skl2onnx.common.data_types import FloatTensorType
 import utils
 
 
@@ -120,7 +122,22 @@ def export_model(model, scaler):
         {"model": model, "scaler": scaler},
         MODEL_PATH
     )
+    
+def export_to_onnx(model, scaler, X_sample):
+    initial_type = [("float_input", FloatTensorType([None, X_sample.shape[1]]))]
+    
+    from sklearn.pipeline import Pipeline
+    pipeline = Pipeline([
+        ('scaler', scaler),
+        ('model',model)
+    ])
+    
+    onx = convert_sklearn(pipeline, initial_types=initial_type)
 
+    with open("models/energy_svr.onnx", "wb") as f:
+        f.write(onx.SerializeToString())
+    
+    print("Model exported successfully")
 
 def main():
     df = update_dataset_from_thingspeak()
@@ -131,6 +148,7 @@ def main():
 
     model, scaler = train_model(X, y)
     export_model(model, scaler)
+    export_to_onnx(model, scaler, X)
 
     print("Training complete. Model exported.")
 
